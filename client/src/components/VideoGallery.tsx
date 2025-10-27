@@ -53,10 +53,6 @@ export function VideoGallery({ projects }: VideoGalleryProps) {
                   playsinline={true}
                   controls={false}
                   light={true}
-                  config={{
-                    vimeo: { playerOptions: { background: true } },
-                    file: { attributes: { playsInline: true } }
-                  }}
                 />
 
                 <div 

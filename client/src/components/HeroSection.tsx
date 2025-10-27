@@ -102,10 +102,6 @@ export function HeroSection({ featuredVideoUrl }: HeroSectionProps) {
                   </div>
                 }
                 controls={true}
-                config={{ 
-                  vimeo: { playerOptions: { background: false } },
-                  file: { attributes: { controlsList: "nodownload" } }
-                }}
               />
             </div>
           </motion.div>
