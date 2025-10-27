@@ -1,0 +1,177 @@
+/*
+Hyperreal Portfolio - Single-file React starter (App.jsx)
+
+How to use in Replit:
+1. Create a new React (Vite/CRA) project or import this file as src/App.jsx
+2. Install dependencies:
+   npm install framer-motion react-player
+   (optional) npm install three @react-three/fiber @react-three/drei
+3. Tailwind: if you want Tailwind, set up tailwind per Tailwind docs; the code uses utility classes but will degrade gracefully.
+4. Replace VIMEO_IDS and DRIVE_LINKS arrays below with your real video IDs and Drive links.
+   - Vimeo IDs: numeric ids (e.g. 76979871) or full vimeo urls work with react-player
+   - Google Drive links: public 'preview' links or converted to direct links (see comment below)
+
+Notes:
+- This starter prioritizes hyperreal visuals: parallax, soft blur, cursor 'beam', video hover-preview, and cinematic typography.
+- Because scraping vimeo.com/grittyflint requires the Vimeo API and an access token, this starter uses a simple manual list (easy and reliable). If you want automated scraping, I can add example code using the Vimeo API — you'll need a Vimeo Access Token.
+
+*/
+
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import ReactPlayer from "react-player";
+
+export default function App() {
+  // Replace these with your actual vimeo urls or IDs and drive preview links
+  const VIMEO_VIDEOS = [
+    "https://vimeo.com/123456789", // replace
+    "https://vimeo.com/987654321",
+  ];
+
+  const DRIVE_LINKS = [
+    "https://drive.google.com/uc?export=preview&id=1iJph3-h5_Tl7f58pLHM5T5Pyc9Djel3q",
+    "https://drive.google.com/uc?export=preview&id=1GThhTv-4JvSE9pnl5qSHWZ9cq7LbFVnl",
+    "https://drive.google.com/uc?export=preview&id=15rmwwP0kmqPHN7O7FUIYS6ErY-8cHZjZ",
+    "https://drive.google.com/uc?export=preview&id=1K_kfEB5My5wqD2OVFYMfXnwbLg3yE0Tq",
+    "https://drive.google.com/uc?export=preview&id=1G-A2rP-JLgab3DWLt8QX0G12V07RHpPQ",
+  ];
+
+  const allMedia = [...VIMEO_VIDEOS, ...DRIVE_LINKS];
+
+  const [active, setActive] = useState(null);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white antialiased">
+      {/* Cinematic background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.14 }}
+          transition={{ duration: 1.6 }}
+          className="w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900 via-black to-black"
+        />
+      </div>
+
+      {/* Cursor beam */}
+      <style>{`
+        body { cursor: none; }
+        .cursor-beam{ position: fixed; width: 96px; height:96px; border-radius:50%; transform: translate(-50%,-50%); pointer-events:none; mix-blend-mode:screen; background: radial-gradient(circle, rgba(255,255,255,0.16), rgba(255,255,255,0.02)); backdrop-filter: blur(6px); box-shadow: 0 8px 40px rgba(0,0,0,0.8);} 
+      `}</style>
+      <CursorBeam />
+
+      <header className="relative z-10 max-w-6xl mx-auto px-6 pt-12">
+        <nav className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight">OPTIX — Moses Mojeokwu</h1>
+            <p className="text-sm opacity-70 mt-1">Director of Photography · Creative Director · Cinematographer · Visual Designer</p>
+          </div>
+          <div className="text-sm opacity-80">Behance • Replit • Vimeo</div>
+        </nav>
+      </header>
+
+      <main className="relative z-10 max-w-6xl mx-auto px-6 py-12">
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <motion.div
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.9 }}
+          >
+            <h2 className="text-5xl font-extrabold leading-tight">Crafting reality through illusion.</h2>
+            <p className="mt-6 text-lg opacity-80">
+              I shape light, motion and narrative into strategic brand systems — cinematic work that lives beyond the frame. Explore case studies that merge technical precision with hyperreal aesthetics.
+            </p>
+
+            <div className="mt-8 flex gap-3">
+              <a href="#work" className="px-5 py-3 bg-white/6 rounded-lg backdrop-blur-sm text-sm">Explore Work</a>
+              <a href="mailto:hello@grittyflint.com" className="px-5 py-3 border border-white/10 rounded-lg text-sm">Contact</a>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ scale: 0.96, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="w-full rounded-2xl overflow-hidden border border-white/6"
+          >
+            {/* Hero preview - first video */}
+            <div className="aspect-video">
+              <ReactPlayer
+                url={allMedia[0]}
+                width="100%"
+                height="100%"
+                light={true}
+                playIcon={<div className="p-6 rounded-full bg-white/10">▶</div>}
+                controls={false}
+                config={{ vimeo: { playerOptions: { background: true } } }}
+              />
+            </div>
+          </motion.div>
+        </section>
+
+        <section id="work" className="mt-14">
+          <h3 className="text-2xl font-semibold mb-6">Selected Works</h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {allMedia.map((url, i) => (
+              <motion.article
+                key={i}
+                whileHover={{ scale: 1.02 }}
+                className="rounded-xl overflow-hidden border border-white/6 bg-black/40"
+              >
+                <div
+                  className="relative aspect-video cursor-pointer"
+                  onMouseEnter={() => setActive(i)}
+                  onMouseLeave={() => setActive(null)}
+                  onClick={() => setActive(i)}
+                >
+                  <ReactPlayer
+                    url={url}
+                    playing={active === i}
+                    width="100%"
+                    height="100%"
+                    muted={true}
+                    loop={true}
+                    playsinline={true}
+                    controls={false}
+                    light={true}
+                  />
+
+                  <div className="absolute bottom-4 left-4 text-xs bg-black/50 backdrop-blur-sm px-3 py-1 rounded">Project · {i + 1}</div>
+                </div>
+
+                <div className="p-4">
+                  <h4 className="font-medium">Project title {i + 1}</h4>
+                  <p className="mt-2 text-sm opacity-70">Short description — brand campaign, product film, or visual case study.</p>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="mt-16 border-t border-white/6 pt-8 pb-24 text-sm opacity-70">
+          Built with craft — replace media arrays with your Vimeo IDs or Drive preview links. For automated Vimeo imports you will need a Vimeo API token.
+        </footer>
+      </main>
+    </div>
+  );
+}
+
+function CursorBeam() {
+  // simple cursor beam following the mouse
+  const [pos, setPos] = React.useState({ x: -200, y: -200 });
+  React.useEffect(() => {
+    function onMove(e) {
+      setPos({ x: e.clientX, y: e.clientY });
+    }
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  return (
+    <div
+      className="cursor-beam"
+      style={{ left: pos.x + "px", top: pos.y + "px", zIndex: 9999 }}
+    />
+  );
+}
