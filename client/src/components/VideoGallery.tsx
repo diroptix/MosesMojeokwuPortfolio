@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ReactPlayer from "react-player";
 import type { Project } from "@shared/schema";
@@ -9,6 +9,15 @@ interface VideoGalleryProps {
 
 export function VideoGallery({ projects }: VideoGalleryProps) {
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (hoveredVideo) {
+      setActiveVideo(hoveredVideo);
+    } else {
+      setActiveVideo(null);
+    }
+  }, [hoveredVideo]);
 
   return (
     <section id="work" className="relative py-16 lg:py-24">
@@ -30,9 +39,8 @@ export function VideoGallery({ projects }: VideoGalleryProps) {
             >
               <div
                 className="relative aspect-video cursor-pointer bg-black/60"
-                onMouseEnter={() => setActiveVideo(project.id)}
-                onMouseLeave={() => setActiveVideo(null)}
-                onClick={() => setActiveVideo(project.id)}
+                onMouseEnter={() => setHoveredVideo(project.id)}
+                onMouseLeave={() => setHoveredVideo(null)}
                 data-testid={`video-container-${project.id}`}
               >
                 <ReactPlayer

@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function CursorBeam() {
   const [pos, setPos] = useState({ x: -200, y: -200 });
   const [isTouch, setIsTouch] = useState(false);
+  const [isKeyboardMode, setIsKeyboardMode] = useState(false);
+  const rafRef = useRef<number>();
 
   useEffect(() => {
     const checkTouch = () => {
@@ -13,22 +15,44 @@ export function CursorBeam() {
     window.addEventListener("resize", checkTouch);
 
     function onMove(e: MouseEvent) {
-      setPos({ x: e.clientX, y: e.clientY });
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+      rafRef.current = requestAnimationFrame(() => {
+        setPos({ x: e.clientX, y: e.clientY });
+        setIsKeyboardMode(false);
+      });
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Tab") {
+        setIsKeyboardMode(true);
+      }
     }
 
     if (!isTouch) {
       window.addEventListener("mousemove", onMove);
-      document.body.style.cursor = "none";
+      window.addEventListener("keydown", onKeyDown);
+      
+      if (!isKeyboardMode) {
+        document.body.style.cursor = "none";
+      } else {
+        document.body.style.cursor = "auto";
+      }
     }
 
     return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
       window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("resize", checkTouch);
       document.body.style.cursor = "auto";
     };
-  }, [isTouch]);
+  }, [isTouch, isKeyboardMode]);
 
-  if (isTouch) return null;
+  if (isTouch || isKeyboardMode) return null;
 
   return (
     <div

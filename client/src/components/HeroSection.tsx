@@ -24,8 +24,8 @@ export function HeroSection({ featuredVideoUrl }: HeroSectionProps) {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center pt-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16 lg:py-24 w-full">
+    <section className="relative min-h-[calc(100vh-5rem)] sm:min-h-screen flex items-center pt-20 sm:pt-24">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8 sm:py-16 lg:py-24 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-12 items-center">
           <motion.div
             initial={{ x: -50, opacity: 0 }}
@@ -63,7 +63,8 @@ export function HeroSection({ featuredVideoUrl }: HeroSectionProps) {
             >
               <Button
                 onClick={scrollToWork}
-                className="px-5 py-3 rounded-lg text-sm backdrop-blur-sm"
+                size="default"
+                className="rounded-lg backdrop-blur-sm"
                 style={{ backgroundColor: "rgba(255, 255, 255, 0.06)" }}
                 variant="ghost"
                 data-testid="button-explore-work"
@@ -72,8 +73,9 @@ export function HeroSection({ featuredVideoUrl }: HeroSectionProps) {
               </Button>
               <Button
                 asChild
+                size="default"
                 variant="outline"
-                className="px-5 py-3 rounded-lg text-sm border-white/10"
+                className="rounded-lg border-white/10"
                 data-testid="button-contact"
               >
                 <a href="mailto:hello@grittyflint.com">Contact</a>
