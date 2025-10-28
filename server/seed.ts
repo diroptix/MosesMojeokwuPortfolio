@@ -7,76 +7,74 @@ export async function seed() {
 
   const initialProjects = [
     {
-      title: "Brand Campaign: Urban Odyssey",
-      description: "A cinematic exploration of metropolitan landscapes, blending architectural precision with human narrative. Shot on RED Komodo 6K.",
-      videoUrl: "https://drive.google.com/uc?export=preview&id=1iJph3-h5_Tl7f58pLHM5T5Pyc9Djel3q",
+      title: "ORS Olive Oil: 3X Scalp Comfort – A Journey to Nourished Confidence",
+      description: "From initial spark to final frame, the ORS Olive Oil 3X Scalp Comfort campaign unfolded like a cinematic masterpiece. Each frame was meticulously crafted with dynamic sequences and nuanced color grading. Beyond visuals, the campaign wove storytelling with strategic marketing for deep audience impact.",
+      videoUrl: "https://vimeo.com/1125696312",
+      thumbnailUrl: "https://i.vimeocdn.com/video/2067913707-93d23b3ec0b0034707e95f5146c240f65616e4d9d23e692730ee59228f4925f5-d_960x540",
       category: "brand-campaign",
-      client: "Urban Collective",
-      role: "Director of Photography",
-      year: "2024",
-      credits: "DP: Moses Mojeokwu\nCamera: RED Komodo 6K\nClient: Urban Collective"
-    },
-    {
-      title: "Product Film: Precision Timepiece",
-      description: "Hyperreal macro cinematography showcasing mechanical artistry. Technical showcase of light manipulation and shallow depth techniques.",
-      videoUrl: "https://drive.google.com/uc?export=preview&id=1GThhTv-4JvSE9pnl5qSHWZ9cq7LbFVnl",
-      category: "product-film",
-      client: "Timekeeper Studios",
-      role: "Cinematographer",
-      year: "2024",
-      credits: "Cinematographer: Moses Mojeokwu\nClient: Timekeeper Studios\nProduction: In-house"
-    },
-    {
-      title: "Fashion Editorial: Monochrome Dreams",
-      description: "High-contrast visual narrative merging fashion and fine art. Experimental lighting setups creating sculptural depth.",
-      videoUrl: "https://drive.google.com/uc?export=preview&id=15rmwwP0kmqPHN7O7FUIYS6ErY-8cHZjZ",
-      category: "case-study",
-      client: "Mode Magazine",
       role: "Creative Director",
-      year: "2023",
-      credits: "Creative Director: Moses Mojeokwu\nClient: Mode Magazine\nStyling: Fashion Forward Team"
+      year: "2024",
+      vimeoId: "1125696312"
     },
     {
-      title: "Documentary Short: Craftsmanship",
-      description: "Intimate portrait of artisan workshops, capturing the intersection of tradition and innovation through cinematic lens work.",
-      videoUrl: "https://drive.google.com/uc?export=preview&id=1K_kfEB5My5wqD2OVFYMfXnwbLg3yE0Tq",
+      title: "Shal'Artem - Knockout Malaria in 3 Days",
+      description: "As Creative Director and DOP, I captured Brodashaggi's energy and the product's promise through dynamic camera work. Every shot engaged viewers and highlighted Shal'Artem's impact. This project balanced striking visuals with compelling storytelling.",
+      videoUrl: "https://vimeo.com/888822688",
+      thumbnailUrl: "https://i.vimeocdn.com/video/1760283135-6aeb3848eb6e9ccf1f427dabf7224bd4592ed64b0283d1b1ea7ffc86a86c0f3a-d_960x540",
+      category: "commercial",
+      role: "Creative Director | Director of Photography",
+      year: "2024",
+      vimeoId: "888822688"
+    },
+    {
+      title: "SPREAD THE ROAR",
+      description: "This campaign blended compelling storytelling with dynamic visuals. I captured Brodashaggi's energy and highlighted the product's promise. Every frame was crafted to engage viewers while emphasizing Shal'Artem's impact.",
+      videoUrl: "https://vimeo.com/472914950",
+      thumbnailUrl: "https://i.vimeocdn.com/video/983616401-0e679f068919074a5c9092aa107c48ef2dd6afd5c0f92c8c8182a30300caf8c2-d_960x540",
+      category: "brand-campaign",
+      role: "Creative Director | Director of Photography",
+      year: "2023",
+      vimeoId: "472914950"
+    },
+    {
+      title: "Bourn Factor Competition – Promotional Video",
+      description: "A cinematic showcase highlighting the creativity and competitive spirit of participants. Each frame captured energy and excitement. The video merged storytelling with impactful visuals.",
+      videoUrl: "https://vimeo.com/374781283",
+      thumbnailUrl: "https://i.vimeocdn.com/video/833341011-d6a10e74939ee0f0f85c40b8b8c2475927bf63b3ce4f7cc3fc188cd03c938f24-d_960x540",
+      category: "brand-campaign",
+      role: "Creative Director | Director of Photography",
+      year: "2023",
+      vimeoId: "374781283"
+    },
+    {
+      title: "McKinsey Forward Impact Stories – Meet Kalada",
+      description: "An insightful exploration of Kalada's journey, blending narrative with corporate storytelling. Every shot emphasized innovation and leadership. The video captured meaningful impact through engaging visuals.",
+      videoUrl: "https://vimeo.com/888821435",
+      thumbnailUrl: "https://i.vimeocdn.com/video/1760152703-70716b5a328c0f0279a8699acf47c4b19936727e5ad09483777e762a2a641d3c-d_960x540",
       category: "case-study",
-      client: "Heritage Foundation",
-      role: "Director of Photography",
-      year: "2023",
-      credits: "DP: Moses Mojeokwu\nDirector: Heritage Foundation\nProducer: Documentary Collective"
-    },
-    {
-      title: "Music Video: Ethereal Soundscapes",
-      description: "Abstract visual composition synchronized with electronic music. Pushed boundaries of color grading and motion dynamics.",
-      videoUrl: "https://drive.google.com/uc?export=preview&id=1G-A2rP-JLgab3DWLt8QX0G12V07RHpPQ",
-      category: "brand-campaign",
-      client: "Independent Artist",
-      role: "Visual Designer",
+      role: "Creative Director | Director of Photography",
       year: "2024",
-      credits: "Visual Designer: Moses Mojeokwu\nArtist: Independent Musician\nGrading: OPTIX Studios"
+      vimeoId: "888821435"
     },
     {
-      title: "Corporate Story: Innovation Lab",
-      description: "Brand film showcasing technological advancement through human-centered storytelling and dynamic camera movement.",
-      videoUrl: "https://vimeo.com/76979871",
+      title: "RUFF N TUMBLE – LISTEN2ME",
+      description: "A vibrant campaign combining playful storytelling with engaging visuals. Every shot resonated with both children and parents. The video effectively captured the essence of the brand.",
+      videoUrl: "https://vimeo.com/279264635",
+      thumbnailUrl: "https://i.vimeocdn.com/video/833342410-4985933520bfe77609e0bbadfbd65b0b8c7fd38b1f8bc97dad2687cfe9fee6fc-d_960x540",
       category: "brand-campaign",
-      client: "TechForward Inc",
-      role: "Cinematographer",
+      role: "Creative Director | Director of Photography",
       year: "2023",
-      vimeoId: "76979871",
-      credits: "Cinematographer: Moses Mojeokwu\nClient: TechForward Inc\nProduction Company: OPTIX"
+      vimeoId: "279264635"
     },
     {
-      title: "Commercial: Automotive Elegance",
-      description: "Luxury vehicle showcase emphasizing design language through strategic lighting and precise camera choreography.",
-      videoUrl: "https://vimeo.com/148751763",
-      category: "product-film",
-      client: "Premium Motors",
-      role: "Director of Photography",
-      year: "2024",
-      vimeoId: "148751763",
-      credits: "DP: Moses Mojeokwu\nClient: Premium Motors\nAgency: Creative Collective"
+      title: "Conversations At Polo Avenue – Betty Irabor",
+      description: "A visually compelling series capturing candid conversations with Betty Irabor. Narrative storytelling emphasized personal insight. The video connected viewers with authentic moments.",
+      videoUrl: "https://vimeo.com/402129451",
+      thumbnailUrl: "https://i.vimeocdn.com/video/871211914-b0c2e52c2b0522af251795fd060a3f1eb10c250dde2c2380b41cc302e342949b-d_960x540",
+      category: "case-study",
+      role: "Creative Director | Director of Photography",
+      year: "2023",
+      vimeoId: "402129451"
     }
   ];
 

@@ -16,6 +16,17 @@ interface VimeoVideo {
   };
   created_time: string;
   tags: Array<{ name: string }>;
+  metadata?: {
+    connections?: {
+      credits?: {
+        total: number;
+        options: {
+          name: string;
+          role: string;
+        }[];
+      };
+    };
+  };
 }
 
 export class VimeoService {
@@ -75,7 +86,12 @@ export class VimeoService {
       const videos = await this.getVideos();
       let syncedCount = 0;
 
-      for (const video of videos) {
+      // Sort videos by created date (newest first) and limit to 6
+      const sortedVideos = videos
+        .sort((a, b) => new Date(b.created_time).getTime() - new Date(a.created_time).getTime())
+        .slice(0, 6);
+
+      for (const video of sortedVideos) {
         const vimeoId = video.uri.split('/').pop() || '';
         
         const exists = await storage.projectExists(vimeoId);
@@ -84,8 +100,26 @@ export class VimeoService {
         }
 
         const category = this.categorizeVideo(video.tags);
-        const thumbnailUrl = video.pictures?.sizes?.[video.pictures.sizes.length - 1]?.link || '';
+        const thumbnailUrl = video.pictures?.sizes?.find(size => size.width === 960)?.link || 
+                           video.pictures?.sizes?.[video.pictures.sizes.length - 1]?.link || '';
         const year = new Date(video.created_time).getFullYear().toString();
+
+        // Get role and credits from metadata if available
+        let role = 'Director of Photography';
+        let credits = '';
+
+        if (video.metadata?.connections?.credits?.options) {
+          const creditInfo = video.metadata.connections.credits.options;
+          const roles = creditInfo.map(c => c.role).filter(Boolean);
+          if (roles.length > 0) {
+            role = roles.join(' | ');
+          }
+          credits = creditInfo.map(c => `${c.role}: ${c.name}`).join('\n');
+        }
+
+        if (!credits) {
+          credits = `Duration: ${Math.floor(video.duration / 60)}m ${video.duration % 60}s`;
+        }
 
         await storage.createProject({
           title: video.name,
@@ -96,8 +130,8 @@ export class VimeoService {
           vimeoId,
           year,
           client: undefined,
-          role: 'Director of Photography',
-          credits: `Duration: ${Math.floor(video.duration / 60)}m ${video.duration % 60}s`
+          role,
+          credits
         });
         
         syncedCount++;
