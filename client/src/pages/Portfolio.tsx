@@ -5,14 +5,25 @@ import { Navigation } from "@/components/Navigation";
 import { HeroSection } from "@/components/HeroSection";
 import { VideoGallery } from "@/components/VideoGallery";
 import { GraphicDesignGallery } from "@/components/GraphicDesignGallery";
+import { TikTokGallery } from "@/components/TikTokGallery";
 import { ContactForm } from "@/components/ContactForm";
 import { Footer } from "@/components/Footer";
-import type { Project } from "@shared/schema";
+import type { Project, TikTokVideo, GraphicDesign } from "@shared/schema";
 
 export default function Portfolio() {
-  const { data: projects, isLoading } = useQuery<Project[]>({
+  const { data: projects, isLoading: projectsLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
   });
+
+  const { data: tiktokVideos, isLoading: tiktokLoading } = useQuery<TikTokVideo[]>({
+    queryKey: ["/api/tiktok-videos"],
+  });
+
+  const { data: graphicDesigns, isLoading: designsLoading } = useQuery<GraphicDesign[]>({
+    queryKey: ["/api/graphic-designs"],
+  });
+
+  const isLoading = projectsLoading || tiktokLoading || designsLoading;
 
   return (
     <div className="min-h-screen text-white antialiased relative overflow-x-hidden">
@@ -59,7 +70,8 @@ export default function Portfolio() {
           <>
             <HeroSection featuredVideoUrl={projects[0].videoUrl} />
             <VideoGallery projects={projects} />
-            <GraphicDesignGallery />
+            <TikTokGallery videos={tiktokVideos || []} />
+            <GraphicDesignGallery designs={graphicDesigns || []} />
             <ContactForm />
           </>
         ) : (

@@ -66,3 +66,21 @@ export const insertGraphicDesignSchema = createInsertSchema(graphicDesigns).omit
 
 export type GraphicDesign = typeof graphicDesigns.$inferSelect;
 export type InsertGraphicDesign = z.infer<typeof insertGraphicDesignSchema>;
+
+export const tiktokVideos = pgTable("tiktok_videos", {
+  id: varchar("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  title: varchar("title", { length: 255 }).notNull(),
+  videoUrl: varchar("video_url", { length: 500 }).notNull(),
+  thumbnailUrl: varchar("thumbnail_url", { length: 500 }),
+  width: varchar("width", { length: 10 }).default("1080"),
+  height: varchar("height", { length: 10 }).default("1920"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertTikTokVideoSchema = createInsertSchema(tiktokVideos).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type TikTokVideo = typeof tiktokVideos.$inferSelect;
+export type InsertTikTokVideo = z.infer<typeof insertTikTokVideoSchema>;

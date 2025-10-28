@@ -1,5 +1,6 @@
 import { db } from "./db";
-import { projects, graphicDesigns } from "@shared/schema";
+import { projects, graphicDesigns, tiktokVideos } from "@shared/schema";
+import { tiktokSeedData } from "./seed/tiktok";
 
 export async function seed() {
   console.log("Seeding database...");
@@ -114,6 +115,11 @@ export async function seed() {
   for (const design of initialGraphicDesigns) {
     await db.insert(graphicDesigns).values(design);
     console.log(`✓ Created graphic design: ${design.title}`);
+  }
+
+  for (const tiktok of tiktokSeedData) {
+    await db.insert(tiktokVideos).values(tiktok);
+    console.log(`✓ Created TikTok video: ${tiktok.title}`);
   }
 }
 

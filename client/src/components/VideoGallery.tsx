@@ -138,9 +138,10 @@ export function VideoGallery({ projects }: VideoGalleryProps) {
     { value: "commercial", label: "Commercials" }
   ];
 
-  const filteredProjects = selectedCategory === "all" 
+  const filteredProjects = (selectedCategory === "all" 
     ? projects 
-    : projects.filter(p => p.category === selectedCategory);
+    : projects.filter(p => p.category === selectedCategory))
+    .slice(0, 6); // Limit to 6 videos
 
   useEffect(() => {
     if (hoveredVideo) {

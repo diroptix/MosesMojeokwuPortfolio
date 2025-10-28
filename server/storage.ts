@@ -1,4 +1,10 @@
-import { type Project, type InsertProject, type Contact, type InsertContact, type GraphicDesign, type InsertGraphicDesign, projects, contacts, graphicDesigns } from "@shared/schema";
+import { 
+  type Project, type InsertProject, 
+  type Contact, type InsertContact, 
+  type GraphicDesign, type InsertGraphicDesign,
+  type TikTokVideo, type InsertTikTokVideo,
+  projects, contacts, graphicDesigns, tiktokVideos
+} from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import { vimeoService } from "./vimeo";
@@ -14,6 +20,9 @@ export interface IStorage {
   getAllGraphicDesigns(): Promise<GraphicDesign[]>;
   getGraphicDesign(id: string): Promise<GraphicDesign | undefined>;
   createGraphicDesign(design: InsertGraphicDesign): Promise<GraphicDesign>;
+  getAllTikTokVideos(): Promise<TikTokVideo[]>;
+  getTikTokVideo(id: string): Promise<TikTokVideo | undefined>;
+  createTikTokVideo(video: InsertTikTokVideo): Promise<TikTokVideo>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -70,6 +79,23 @@ export class DatabaseStorage implements IStorage {
       .values(insertDesign)
       .returning();
     return design;
+  }
+
+  async getAllTikTokVideos(): Promise<TikTokVideo[]> {
+    return await db.select().from(tiktokVideos);
+  }
+
+  async getTikTokVideo(id: string): Promise<TikTokVideo | undefined> {
+    const [video] = await db.select().from(tiktokVideos).where(eq(tiktokVideos.id, id));
+    return video || undefined;
+  }
+
+  async createTikTokVideo(insertVideo: InsertTikTokVideo): Promise<TikTokVideo> {
+    const [video] = await db
+      .insert(tiktokVideos)
+      .values(insertVideo)
+      .returning();
+    return video;
   }
 }
 

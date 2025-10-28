@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSchema, insertGraphicDesignSchema } from "@shared/schema";
+import { insertContactSchema, insertGraphicDesignSchema, insertTikTokVideoSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/projects", async (req, res) => {
@@ -89,6 +89,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(design);
     } catch (error) {
       res.status(400).json({ error: "Invalid graphic design data" });
+    }
+  });
+
+  app.get("/api/tiktok-videos", async (req, res) => {
+    try {
+      const videos = await storage.getAllTikTokVideos();
+      res.json(videos);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch TikTok videos" });
+    }
+  });
+
+  app.get("/api/tiktok-videos/:id", async (req, res) => {
+    try {
+      const video = await storage.getTikTokVideo(req.params.id);
+      if (!video) {
+        res.status(404).json({ error: "TikTok video not found" });
+        return;
+      }
+      res.json(video);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch TikTok video" });
+    }
+  });
+
+  app.post("/api/tiktok-videos", async (req, res) => {
+    try {
+      const validatedData = insertTikTokVideoSchema.parse(req.body);
+      const video = await storage.createTikTokVideo(validatedData);
+      res.status(201).json(video);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid TikTok video data" });
     }
   });
 
