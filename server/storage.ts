@@ -1,4 +1,4 @@
-import { type Project, type InsertProject, type Contact, type InsertContact, projects, contacts } from "@shared/schema";
+import { type Project, type InsertProject, type Contact, type InsertContact, type GraphicDesign, type InsertGraphicDesign, projects, contacts, graphicDesigns } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import { vimeoService } from "./vimeo";
@@ -11,6 +11,9 @@ export interface IStorage {
   createContact(contact: InsertContact): Promise<Contact>;
   syncVimeoProjects(): Promise<void>;
   projectExists(vimeoId: string): Promise<boolean>;
+  getAllGraphicDesigns(): Promise<GraphicDesign[]>;
+  getGraphicDesign(id: string): Promise<GraphicDesign | undefined>;
+  createGraphicDesign(design: InsertGraphicDesign): Promise<GraphicDesign>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -50,6 +53,23 @@ export class DatabaseStorage implements IStorage {
   async projectExists(vimeoId: string): Promise<boolean> {
     const existing = await db.select().from(projects).where(eq(projects.vimeoId, vimeoId));
     return existing.length > 0;
+  }
+
+  async getAllGraphicDesigns(): Promise<GraphicDesign[]> {
+    return await db.select().from(graphicDesigns);
+  }
+
+  async getGraphicDesign(id: string): Promise<GraphicDesign | undefined> {
+    const [design] = await db.select().from(graphicDesigns).where(eq(graphicDesigns.id, id));
+    return design || undefined;
+  }
+
+  async createGraphicDesign(insertDesign: InsertGraphicDesign): Promise<GraphicDesign> {
+    const [design] = await db
+      .insert(graphicDesigns)
+      .values(insertDesign)
+      .returning();
+    return design;
   }
 }
 

@@ -44,3 +44,25 @@ export const insertContactSchema = createInsertSchema(contacts).omit({
 
 export type Contact = typeof contacts.$inferSelect;
 export type InsertContact = z.infer<typeof insertContactSchema>;
+
+export const graphicDesigns = pgTable("graphic_designs", {
+  id: varchar("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  imageUrl: varchar("image_url", { length: 500 }).notNull(),
+  thumbnailUrl: varchar("thumbnail_url", { length: 500 }),
+  category: varchar("category", { length: 100 }).default("graphic-design"),
+  client: varchar("client", { length: 255 }),
+  year: varchar("year", { length: 4 }),
+  width: varchar("width", { length: 10 }).default("2700"),
+  height: varchar("height", { length: 10 }).default("4050"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertGraphicDesignSchema = createInsertSchema(graphicDesigns).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type GraphicDesign = typeof graphicDesigns.$inferSelect;
+export type InsertGraphicDesign = z.infer<typeof insertGraphicDesignSchema>;

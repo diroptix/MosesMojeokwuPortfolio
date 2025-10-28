@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { projects } from "@shared/schema";
+import { projects, graphicDesigns } from "@shared/schema";
 
 export async function seed() {
   console.log("Seeding database...");
@@ -85,6 +85,36 @@ export async function seed() {
   }
 
   console.log("Database seeded successfully!");
+
+  const initialGraphicDesigns = [
+    {
+      title: "Craftsmanship Design Layout",
+      description: "High-resolution graphic design showcasing artisan craftsmanship with modern aesthetic",
+      imageUrl: "https://drive.google.com/uc?export=view&id=1K_kfEB5My5wqD2OVFYMfXnwbLg3yE0Tq",
+      thumbnailUrl: "https://drive.google.com/uc?export=view&id=1K_kfEB5My5wqD2OVFYMfXnwbLg3yE0Tq",
+      category: "graphic-design",
+      client: "Heritage Foundation",
+      year: "2024",
+      width: "2700",
+      height: "4050"
+    },
+    {
+      title: "Ethereal Soundscapes Design",
+      description: "Abstract visual composition for music branding with vibrant color palette",
+      imageUrl: "https://drive.google.com/uc?export=view&id=1G-A2rP-JLgab3DWLt8QX0G12V07RHpPQ",
+      thumbnailUrl: "https://drive.google.com/uc?export=view&id=1G-A2rP-JLgab3DWLt8QX0G12V07RHpPQ",
+      category: "graphic-design",
+      client: "Independent Artist",
+      year: "2024",
+      width: "2700",
+      height: "4050"
+    }
+  ];
+
+  for (const design of initialGraphicDesigns) {
+    await db.insert(graphicDesigns).values(design);
+    console.log(`✓ Created graphic design: ${design.title}`);
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

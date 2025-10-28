@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactSchema } from "@shared/schema";
+import { insertContactSchema, insertGraphicDesignSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/projects", async (req, res) => {
@@ -57,6 +57,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Vimeo projects synced successfully" });
     } catch (error) {
       res.status(500).json({ error: "Failed to sync Vimeo projects" });
+    }
+  });
+
+  app.get("/api/graphic-designs", async (req, res) => {
+    try {
+      const designs = await storage.getAllGraphicDesigns();
+      res.json(designs);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch graphic designs" });
+    }
+  });
+
+  app.get("/api/graphic-designs/:id", async (req, res) => {
+    try {
+      const design = await storage.getGraphicDesign(req.params.id);
+      if (!design) {
+        res.status(404).json({ error: "Graphic design not found" });
+        return;
+      }
+      res.json(design);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch graphic design" });
+    }
+  });
+
+  app.post("/api/graphic-designs", async (req, res) => {
+    try {
+      const validatedData = insertGraphicDesignSchema.parse(req.body);
+      const design = await storage.createGraphicDesign(validatedData);
+      res.status(201).json(design);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid graphic design data" });
     }
   });
 
