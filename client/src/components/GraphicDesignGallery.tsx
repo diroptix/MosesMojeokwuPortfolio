@@ -1,15 +1,45 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Maximize2 } from "lucide-react";
+import { X, Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { GraphicDesign } from "@shared/schema";
 
 export function GraphicDesignGallery() {
-  const [selectedDesign, setSelectedDesign] = useState<GraphicDesign | null>(null);
-  
   const { data: designs, isLoading } = useQuery<GraphicDesign[]>({
     queryKey: ["/api/graphic-designs"],
   });
+
+  const [selectedDesign, setSelectedDesign] = useState<GraphicDesign | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (!designs) return;
+    
+    switch (e.key) {
+      case 'ArrowLeft':
+        if (selectedDesign) {
+          const newIndex = (selectedIndex - 1 + designs.length) % designs.length;
+          setSelectedIndex(newIndex);
+          setSelectedDesign(designs[newIndex]);
+        }
+        break;
+      case 'ArrowRight':
+        if (selectedDesign) {
+          const newIndex = (selectedIndex + 1) % designs.length;
+          setSelectedIndex(newIndex);
+          setSelectedDesign(designs[newIndex]);
+        }
+        break;
+      case 'Escape':
+        setSelectedDesign(null);
+        break;
+    }
+  }, [selectedDesign, selectedIndex, designs]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
 
   if (isLoading) {
     return (
@@ -44,8 +74,14 @@ export function GraphicDesignGallery() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: i * 0.05 }}
-              whileHover={{ scale: 1.03 }}
-              onClick={() => setSelectedDesign(design)}
+              whileHover={{ 
+                scale: 1.03,
+                transition: { duration: 0.2 }
+              }}
+              onClick={() => {
+                setSelectedDesign(design);
+                setSelectedIndex(i);
+              }}
               className="relative rounded-lg overflow-hidden border border-white/6 bg-black/40 hover-elevate transition-all duration-300 cursor-pointer group"
               data-testid={`card-design-${design.id}`}
               style={{ aspectRatio: "214/306" }}
@@ -76,7 +112,7 @@ export function GraphicDesignGallery() {
       </div>
 
       <AnimatePresence>
-        {selectedDesign && (
+        {selectedDesign && designs && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -85,6 +121,41 @@ export function GraphicDesignGallery() {
             className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 lg:p-8"
             data-testid="modal-design-fullview"
           >
+            {/* Navigation Controls */}
+            <div className="absolute inset-y-0 left-4 flex items-center">
+              <motion.button
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const newIndex = (selectedIndex - 1 + designs.length) % designs.length;
+                  setSelectedIndex(newIndex);
+                  setSelectedDesign(designs[newIndex]);
+                }}
+                className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 hover-elevate active-elevate-2 flex items-center justify-center text-white"
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </motion.button>
+            </div>
+            <div className="absolute inset-y-0 right-4 flex items-center">
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const newIndex = (selectedIndex + 1) % designs.length;
+                  setSelectedIndex(newIndex);
+                  setSelectedDesign(designs[newIndex]);
+                }}
+                className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 hover-elevate active-elevate-2 flex items-center justify-center text-white"
+                aria-label="Next image"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </motion.button>
+            </div>
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -109,16 +180,20 @@ export function GraphicDesignGallery() {
             >
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
-                  <motion.img
-                    layoutId={`design-${selectedDesign.id}`}
-                    src={selectedDesign.imageUrl}
-                    alt={selectedDesign.title}
-                    className="w-full h-auto rounded-xl border border-white/10"
+                  <motion.div
+                    className="relative w-full"
                     style={{
                       maxHeight: "85vh",
-                      objectFit: "contain"
+                      aspectRatio: `${selectedDesign.width}/${selectedDesign.height}`
                     }}
-                  />
+                  >
+                    <motion.img
+                      layoutId={`design-${selectedDesign.id}`}
+                      src={selectedDesign.imageUrl}
+                      alt={selectedDesign.title}
+                      className="absolute inset-0 w-full h-full rounded-xl border border-white/10 object-contain"
+                    />
+                  </motion.div>
                 </div>
 
                 <div className="bg-black/60 backdrop-blur-xl rounded-xl p-6 border border-white/10 space-y-4">
