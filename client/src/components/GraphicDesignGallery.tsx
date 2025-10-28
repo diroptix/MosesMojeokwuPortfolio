@@ -60,15 +60,15 @@ export function GraphicDesignGallery() {
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="mb-8 lg:mb-12">
           <h3 className="text-2xl lg:text-3xl font-semibold text-white" data-testid="text-graphic-design-title">
-            Graphic Design
+            Featured Designs
           </h3>
           <p className="mt-2 text-white/60">
-            High-resolution layouts and visual compositions
+            Selected high-resolution layouts and visual compositions
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
-          {designs.map((design, i) => (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-6">
+          {designs.slice(0, 4).map((design, i) => (
             <motion.article
               key={design.id}
               initial={{ opacity: 0, y: 20 }}

@@ -51,15 +51,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/projects/sync-vimeo", async (req, res) => {
-    try {
-      await storage.syncVimeoProjects();
-      res.json({ message: "Vimeo projects synced successfully" });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to sync Vimeo projects" });
-    }
-  });
-
   app.get("/api/graphic-designs", async (req, res) => {
     try {
       const designs = await storage.getAllGraphicDesigns();

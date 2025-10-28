@@ -14,7 +14,6 @@ export const projects = pgTable("projects", {
   role: varchar("role", { length: 255 }),
   year: varchar("year", { length: 4 }),
   credits: text("credits"),
-  vimeoId: varchar("vimeo_id", { length: 50 }),
   tags: text("tags"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

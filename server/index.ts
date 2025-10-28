@@ -3,7 +3,6 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seed } from "./seed";
-import { vimeoService } from "./vimeo";
 import { storage } from "./storage";
 
 const app = express();
@@ -52,14 +51,8 @@ app.use((req, res, next) => {
 
 (async () => {
   await seed();
-
-  // Sync videos from Vimeo if credentials are available
-  try {
-    await vimeoService.syncVideosToProjects(storage);
-  } catch (error) {
-    log('Vimeo sync skipped - using seeded data');
-  }
-
+  
+  // No more Vimeo sync needed - using direct embed URLs
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

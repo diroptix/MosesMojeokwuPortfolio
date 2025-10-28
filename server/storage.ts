@@ -7,7 +7,6 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
-import { vimeoService } from "./vimeo";
 
 export interface IStorage {
   getAllProjects(): Promise<Project[]>;
@@ -15,8 +14,6 @@ export interface IStorage {
   createProject(project: InsertProject): Promise<Project>;
   getProjectsByCategory(category: string): Promise<Project[]>;
   createContact(contact: InsertContact): Promise<Contact>;
-  syncVimeoProjects(): Promise<void>;
-  projectExists(vimeoId: string): Promise<boolean>;
   getAllGraphicDesigns(): Promise<GraphicDesign[]>;
   getGraphicDesign(id: string): Promise<GraphicDesign | undefined>;
   createGraphicDesign(design: InsertGraphicDesign): Promise<GraphicDesign>;
@@ -55,12 +52,8 @@ export class DatabaseStorage implements IStorage {
     return contact;
   }
 
-  async syncVimeoProjects(): Promise<void> {
-    await vimeoService.syncVideosToProjects(this);
-  }
-
-  async projectExists(vimeoId: string): Promise<boolean> {
-    const existing = await db.select().from(projects).where(eq(projects.vimeoId, vimeoId));
+  async projectExists(id: string): Promise<boolean> {
+    const existing = await db.select().from(projects).where(eq(projects.id, id));
     return existing.length > 0;
   }
 

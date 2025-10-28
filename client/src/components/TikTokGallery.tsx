@@ -11,11 +11,11 @@ export function TikTokGallery({ videos }: TikTokGalleryProps) {
     <section id="tiktok" className="relative py-16 lg:py-24 bg-black/40">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <h3 className="text-2xl lg:text-3xl font-semibold mb-8 lg:mb-12">
-          TikTok Content
+          TikTok Highlights
         </h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {videos.map((video, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          {videos.slice(0, 3).map((video, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}

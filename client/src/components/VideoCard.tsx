@@ -5,36 +5,14 @@ import type { Project } from "@shared/schema";
 interface VideoCardProps {
   project: Project;
   index: number;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export function VideoCard({ project, index, onClick }: VideoCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const [showVideo, setShowVideo] = useState(false);
-
-  const getVideoId = (url: string): string | null => {
-    // Handle Vimeo URLs
-    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-    if (vimeoMatch) return vimeoMatch[1];
-
-    // Handle YouTube URLs
-    const youtubeMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i);
-    if (youtubeMatch) return youtubeMatch[1];
-
-    return null;
-  };
 
   const getEmbedUrl = (url: string): string => {
-    const videoId = getVideoId(url);
-    if (!videoId) return url;
-
     // Ensure URL is HTTPS
-    if (url.includes('vimeo.com')) {
-      return `https://player.vimeo.com/video/${videoId}?autoplay=0&muted=0&controls=1`;
-    } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
-      return `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&controls=1&modestbranding=1`;
-    }
-
     return url.replace('http://', 'https://');
   };
 
@@ -50,35 +28,20 @@ export function VideoCard({ project, index, onClick }: VideoCardProps) {
       onMouseLeave={() => setIsHovered(false)}
       data-testid={`card-project-${project.id}`}
     >
-      <div 
-        className="relative aspect-video"
-        onMouseEnter={() => setShowVideo(true)}
-        onMouseLeave={() => setShowVideo(false)}
-      >
-        {/* Always show thumbnail when video is not displayed */}
-        {project.thumbnailUrl && !showVideo && (
-          <div className="absolute inset-0">
-            <img
-              src={project.thumbnailUrl}
-              alt={project.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/20 hover:bg-black/10 transition-colors duration-300">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <svg className="w-12 h-12 text-white/90" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
-              </div>
-            </div>
-          </div>
+      <div className="relative aspect-video">
+        {project.thumbnailUrl && (
+          <img
+            src={project.thumbnailUrl}
+            alt={project.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
         )}
-        {/* Show iframe when hovered */}
         <iframe
           src={getEmbedUrl(project.videoUrl)}
           className="absolute inset-0 w-full h-full"
           style={{
-            opacity: showVideo ? 1 : 0,
-            transition: "opacity 0.3s ease"
+            opacity: isHovered ? 1 : 0,
+            transition: "opacity 0.3s ease",
           }}
           frameBorder="0"
           allow="autoplay; fullscreen; picture-in-picture"
@@ -114,6 +77,6 @@ export function VideoCard({ project, index, onClick }: VideoCardProps) {
           </p>
         )}
       </div>
-    </motion.article>
+        </motion.article>
   );
 }

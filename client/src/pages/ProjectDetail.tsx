@@ -2,8 +2,7 @@
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import ReactPlayer from "react-player";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Project } from "@shared/schema";
 
@@ -65,13 +64,16 @@ export default function ProjectDetail() {
                 animate={{ opacity: 1, y: 0 }}
                 className="aspect-video rounded-xl overflow-hidden border border-white/6 bg-black/60"
               >
-                <ReactPlayer
-                  url={project.videoUrl}
-                  width="100%"
-                  height="100%"
-                  controls={true}
-                  playing={true}
-                />
+                <div className="w-full h-full">
+                  <iframe
+                    src={project.videoUrl}
+                    width="100%"
+                    height="100%"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
               </motion.div>
             </div>
 
@@ -107,9 +109,11 @@ export default function ProjectDetail() {
                   </div>
                 )}
                 
-                <div className="inline-block px-3 py-1 rounded-full bg-white/10 text-xs font-mono uppercase tracking-wider mt-4">
-                  {project.category.replace('-', ' ')}
-                </div>
+                {project.featured && (
+                  <div className="inline-block px-3 py-1 rounded-full bg-white/10 text-xs font-mono uppercase tracking-wider mt-4">
+                    Featured Work
+                  </div>
+                )}
               </div>
 
               <div className="border-t border-white/10 pt-6">
@@ -128,19 +132,7 @@ export default function ProjectDetail() {
                 </div>
               )}
 
-              {project.vimeoId && (
-                <div className="border-t border-white/10 pt-6">
-                  <a
-                    href={`https://vimeo.com/${project.vimeoId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm hover:opacity-70 transition-opacity"
-                  >
-                    View on Vimeo
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
-              )}
+
             </motion.div>
           </div>
         </main>
