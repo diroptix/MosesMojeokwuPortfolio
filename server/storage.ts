@@ -1,6 +1,7 @@
 import { type Project, type InsertProject, type Contact, type InsertContact, projects, contacts } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
+import { vimeoService } from "./vimeo";
 
 export interface IStorage {
   getAllProjects(): Promise<Project[]>;
@@ -8,6 +9,7 @@ export interface IStorage {
   createProject(project: InsertProject): Promise<Project>;
   getProjectsByCategory(category: string): Promise<Project[]>;
   createContact(contact: InsertContact): Promise<Contact>;
+  syncVimeoProjects(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -38,6 +40,27 @@ export class DatabaseStorage implements IStorage {
       .values(insertContact)
       .returning();
     return contact;
+  }
+
+  async syncVimeoProjects(): Promise<void> {
+    try {
+      const vimeoVideos = await vimeoService.getUserVideos('grittyflint');
+      
+      for (const video of vimeoVideos) {
+        const projectData = vimeoService.parseVimeoVideoToProject(video);
+        const vimeoId = projectData.vimeoId;
+        
+        // Check if project already exists
+        const existing = await db.select().from(projects).where(eq(projects.vimeoId, vimeoId || ''));
+        
+        if (existing.length === 0) {
+          await this.createProject(projectData);
+          console.log(`Synced new project: ${projectData.title}`);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to sync Vimeo projects:', error);
+    }
   }
 }
 

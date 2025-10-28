@@ -7,7 +7,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/projects", async (req, res) => {
     try {
       const category = req.query.category as string | undefined;
-      
+
       if (category) {
         const projects = await storage.getProjectsByCategory(category);
         res.json(projects);
@@ -40,6 +40,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(contact);
     } catch (error) {
       res.status(400).json({ error: "Invalid contact data" });
+    }
+  });
+
+  app.post("/api/projects/sync-vimeo", async (req, res) => {
+    try {
+      await storage.syncVimeoProjects();
+      res.json({ message: "Vimeo projects synced successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to sync Vimeo projects" });
     }
   });
 
