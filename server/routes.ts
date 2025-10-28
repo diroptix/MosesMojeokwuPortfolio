@@ -1,12 +1,20 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { insertContactSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  app.get("/api/projects", async (_req, res) => {
+  app.get("/api/projects", async (req, res) => {
     try {
-      const projects = await storage.getAllProjects();
-      res.json(projects);
+      const category = req.query.category as string | undefined;
+      
+      if (category) {
+        const projects = await storage.getProjectsByCategory(category);
+        res.json(projects);
+      } else {
+        const projects = await storage.getAllProjects();
+        res.json(projects);
+      }
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch projects" });
     }
@@ -22,6 +30,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(project);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch project" });
+    }
+  });
+
+  app.post("/api/contacts", async (req, res) => {
+    try {
+      const validatedData = insertContactSchema.parse(req.body);
+      const contact = await storage.createContact(validatedData);
+      res.status(201).json(contact);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid contact data" });
     }
   });
 
