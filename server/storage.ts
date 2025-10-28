@@ -43,6 +43,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async syncVimeoProjects(): Promise<void> {
+    await vimeoService.syncVideosToProjects(this);
+  }
+}
+
+  async syncVimeoProjects(): Promise<void> {
     try {
       const vimeoVideos = await vimeoService.getUserVideos('grittyflint');
       
