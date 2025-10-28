@@ -10,6 +10,7 @@ export interface IStorage {
   getProjectsByCategory(category: string): Promise<Project[]>;
   createContact(contact: InsertContact): Promise<Contact>;
   syncVimeoProjects(): Promise<void>;
+  projectExists(vimeoId: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -45,27 +46,10 @@ export class DatabaseStorage implements IStorage {
   async syncVimeoProjects(): Promise<void> {
     await vimeoService.syncVideosToProjects(this);
   }
-}
 
-  async syncVimeoProjects(): Promise<void> {
-    try {
-      const vimeoVideos = await vimeoService.getUserVideos('grittyflint');
-      
-      for (const video of vimeoVideos) {
-        const projectData = vimeoService.parseVimeoVideoToProject(video);
-        const vimeoId = projectData.vimeoId;
-        
-        // Check if project already exists
-        const existing = await db.select().from(projects).where(eq(projects.vimeoId, vimeoId || ''));
-        
-        if (existing.length === 0) {
-          await this.createProject(projectData);
-          console.log(`Synced new project: ${projectData.title}`);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to sync Vimeo projects:', error);
-    }
+  async projectExists(vimeoId: string): Promise<boolean> {
+    const existing = await db.select().from(projects).where(eq(projects.vimeoId, vimeoId));
+    return existing.length > 0;
   }
 }
 

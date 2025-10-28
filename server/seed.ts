@@ -1,7 +1,7 @@
 import { db } from "./db";
 import { projects } from "@shared/schema";
 
-async function seed() {
+export async function seed() {
   console.log("Seeding database...");
 
   const initialProjects = [
@@ -85,10 +85,11 @@ async function seed() {
   }
 
   console.log("Database seeded successfully!");
-  process.exit(0);
 }
 
-seed().catch((error) => {
-  console.error("Error seeding database:", error);
-  process.exit(1);
-});
+if (import.meta.url === `file://${process.argv[1]}`) {
+  seed().catch((error) => {
+    console.error("Error seeding database:", error);
+    process.exit(1);
+  });
+}

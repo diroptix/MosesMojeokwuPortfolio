@@ -73,9 +73,16 @@ export class VimeoService {
 
     try {
       const videos = await this.getVideos();
+      let syncedCount = 0;
 
       for (const video of videos) {
         const vimeoId = video.uri.split('/').pop() || '';
+        
+        const exists = await storage.projectExists(vimeoId);
+        if (exists) {
+          continue;
+        }
+
         const category = this.categorizeVideo(video.tags);
         const thumbnailUrl = video.pictures?.sizes?.[video.pictures.sizes.length - 1]?.link || '';
         const year = new Date(video.created_time).getFullYear().toString();
@@ -92,9 +99,12 @@ export class VimeoService {
           role: 'Director of Photography',
           credits: `Duration: ${Math.floor(video.duration / 60)}m ${video.duration % 60}s`
         });
+        
+        syncedCount++;
+        console.log(`Synced new project: ${video.name}`);
       }
 
-      console.log(`Synced ${videos.length} videos from Vimeo`);
+      console.log(`Sync complete: ${syncedCount} new videos added from ${videos.length} total`);
     } catch (error) {
       console.error('Failed to sync Vimeo videos:', error);
       throw error;
