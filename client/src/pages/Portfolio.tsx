@@ -4,6 +4,7 @@ import { CursorBeam } from "@/components/CursorBeam";
 import { Navigation } from "@/components/Navigation";
 import { HeroSection } from "@/components/HeroSection";
 import { VideoGallery } from "@/components/VideoGallery";
+import { ContactForm } from "@/components/ContactForm";
 import { Footer } from "@/components/Footer";
 import type { Project } from "@shared/schema";
 
@@ -57,6 +58,7 @@ export default function Portfolio() {
           <>
             <HeroSection featuredVideoUrl={projects[0].videoUrl} />
             <VideoGallery projects={projects} />
+            <ContactForm />
           </>
         ) : (
           <div className="min-h-screen flex items-center justify-center">

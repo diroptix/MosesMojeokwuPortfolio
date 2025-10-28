@@ -102,6 +102,15 @@ export function HeroSection({ featuredVideoUrl }: HeroSectionProps) {
                   </div>
                 }
                 controls={true}
+                config={{
+                  vimeo: {
+                    playerOptions: {
+                      quality: '720p',
+                      responsive: true,
+                      preload: true
+                    }
+                  }
+                }}
               />
             </div>
           </motion.div>

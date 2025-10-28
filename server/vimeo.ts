@@ -208,3 +208,115 @@ export class VimeoService {
 }
 
 export const vimeoService = new VimeoService();
+import { Vimeo } from 'vimeo';
+
+export interface VimeoVideo {
+  uri: string;
+  name: string;
+  description: string;
+  link: string;
+  duration: number;
+  pictures: {
+    sizes: Array<{
+      link: string;
+      width: number;
+      height: number;
+    }>;
+  };
+  created_time: string;
+  tags: Array<{
+    name: string;
+    canonical: string;
+  }>;
+}
+
+export class VimeoService {
+  private client: any;
+
+  constructor() {
+    const clientId = process.env.VIMEO_CLIENT_ID;
+    const clientSecret = process.env.VIMEO_CLIENT_SECRET;
+    const accessToken = process.env.VIMEO_ACCESS_TOKEN;
+
+    if (!clientId || !clientSecret || !accessToken) {
+      console.warn('Vimeo credentials not found in environment variables');
+      return;
+    }
+
+    this.client = new Vimeo(clientId, clientSecret, accessToken);
+  }
+
+  async getVideos(): Promise<VimeoVideo[]> {
+    if (!this.client) {
+      return [];
+    }
+
+    return new Promise((resolve, reject) => {
+      this.client.request(
+        {
+          method: 'GET',
+          path: '/me/videos',
+          query: {
+            per_page: 50,
+            fields: 'uri,name,description,link,duration,pictures,created_time,tags'
+          }
+        },
+        (error: any, body: any) => {
+          if (error) {
+            console.error('Vimeo API error:', error);
+            reject(error);
+            return;
+          }
+          resolve(body.data || []);
+        }
+      );
+    });
+  }
+
+  async syncVideosToProjects(storage: any): Promise<void> {
+    try {
+      const videos = await this.getVideos();
+      
+      for (const video of videos) {
+        const vimeoId = video.uri.split('/').pop() || '';
+        const category = this.categorizeVideo(video.tags);
+        const thumbnailUrl = video.pictures?.sizes?.[video.pictures.sizes.length - 1]?.link || '';
+        
+        await storage.createProject({
+          title: video.name,
+          description: video.description || 'A cinematic project',
+          videoUrl: video.link,
+          thumbnailUrl,
+          category,
+          vimeoId,
+          year: new Date(video.created_time).getFullYear().toString()
+        });
+      }
+      
+      console.log(`Synced ${videos.length} videos from Vimeo`);
+    } catch (error) {
+      console.error('Failed to sync Vimeo videos:', error);
+    }
+  }
+
+  private categorizeVideo(tags: Array<{ name: string }>): string {
+    const tagNames = tags.map(t => t.name.toLowerCase());
+    
+    if (tagNames.some(t => t.includes('brand') || t.includes('campaign'))) {
+      return 'brand-campaign';
+    }
+    if (tagNames.some(t => t.includes('product'))) {
+      return 'product-film';
+    }
+    if (tagNames.some(t => t.includes('case') || t.includes('study'))) {
+      return 'case-study';
+    }
+    if (tagNames.some(t => t.includes('commercial'))) {
+      return 'commercial';
+    }
+    
+    return 'brand-campaign';
+  }
+}
+
+export const vimeoService = new VimeoService();

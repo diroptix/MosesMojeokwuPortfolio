@@ -37,6 +37,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertContactSchema.parse(req.body);
       const contact = await storage.createContact(validatedData);
+      
+      // Log contact for notification (can be extended with email service)
+      console.log('New contact submission:', {
+        name: contact.name,
+        email: contact.email,
+        message: contact.message.substring(0, 100)
+      });
+      
       res.status(201).json(contact);
     } catch (error) {
       res.status(400).json({ error: "Invalid contact data" });

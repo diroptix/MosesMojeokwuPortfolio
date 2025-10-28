@@ -9,6 +9,7 @@ export const projects = pgTable("projects", {
   videoUrl: varchar("video_url", { length: 500 }).notNull(),
   thumbnailUrl: varchar("thumbnail_url", { length: 500 }),
   category: varchar("category", { length: 100 }).notNull().default("brand-campaign"),
+  featured: varchar("featured", { length: 10 }).default("false"),
   client: varchar("client", { length: 255 }),
   role: varchar("role", { length: 255 }),
   year: varchar("year", { length: 4 }),
